@@ -1,3 +1,4 @@
+$:.unshift File.expand_path("..", __FILE__)
 require 'capistrano'
 require 'capistrano/cli'
 require 'helpers'

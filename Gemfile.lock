@@ -27,8 +27,13 @@ GEM
       addressable (>= 2.1.1)
       eventmachine (>= 0.12.9)
     eventmachine (0.12.10)
+    git (1.2.5)
     highline (1.6.2)
     i18n (0.5.0)
+    jeweler (1.6.0)
+      bundler (~> 1.0.0)
+      git (>= 1.2.5)
+      rake
     kgio (2.4.0)
     magent (0.5.4)
       em-websocket
@@ -52,6 +57,9 @@ GEM
     net-ssh-gateway (1.1.0)
       net-ssh (>= 1.99.1)
     rack (1.2.2)
+    rake (0.8.7)
+    rcov (0.9.9)
+    shoulda (2.11.3)
     state_machine (0.9.4)
     tzinfo (0.3.27)
     unicorn (3.6.2)
@@ -65,8 +73,12 @@ PLATFORMS
 
 DEPENDENCIES
   bluepill (>= 0.0.48)
+  bundler (~> 1.0.0)
   capistrano (>= 2.5.9)
   capistrano-ext (>= 1.2.1)
+  jeweler (~> 1.6.0)
   magent
   mongoid
+  rcov
+  shoulda
   unicorn
