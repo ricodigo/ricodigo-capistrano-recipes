@@ -2,17 +2,17 @@
 # These are helper methods that will be available to your recipes.
 # =========================================================================
 
-# automatically sets the environment based on presence of 
+# automatically sets the environment based on presence of
 # :stage (multistage gem), :rails_env, or RAILS_ENV variable; otherwise defaults to 'production'
-def environment  
+def environment
   if exists?(:stage)
     stage
   elsif exists?(:rails_env)
-    rails_env  
+    rails_env
   elsif(ENV['RAILS_ENV'])
     ENV['RAILS_ENV']
   else
-    "production"  
+    "production"
   end
 end
 
@@ -29,7 +29,7 @@ def is_using_unicorn
 end
 
 def is_app_monitored?
-  is_using('bluepill', :monitorer) || is_using('god', :monitorer)
+  is_using('bluepill', :monitorer)
 end
 
 def is_using(something, with_some_var)
@@ -72,10 +72,10 @@ def generate_config(local_file,remote_file)
   File.open(temp_file, 'w+') { |f| f << buffer }
   upload temp_file, remote_file, :via => :scp
   `rm #{temp_file}`
-end 
+end
 
 # =========================================================================
-# Executes a basic rake task. 
+# Executes a basic rake task.
 # Example: run_rake log:clear
 # =========================================================================
 def run_rake(task)

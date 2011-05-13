@@ -1,8 +1,8 @@
 Capistrano::Configuration.instance.load do
-  # Number of workers (Rule of thumb is 2 per CPU)
+  # Number of workers (Rule of thumb is 1 per CPU)
   # Just be aware that every worker needs to cache all classes and thus eat some
-  # of your RAM. 
-  set :unicorn_workers, 8 unless exists?(:unicorn_workers)
+  # of your RAM.
+  set :unicorn_workers, 4 unless exists?(:unicorn_workers)
 
   # Workers timeout in the amount of seconds below, when the master kills it and
   # forks another one.
@@ -24,7 +24,7 @@ Capistrano::Configuration.instance.load do
   # Our unicorn template to be parsed by erb
   # You may need to generate this file the first time with the generator
   # included in the gem
-  set(:unicorn_local_config) { File.join(templates_path, "unicorn.rb.erb") } 
+  set(:unicorn_local_config) { File.join(templates_path, "unicorn.rb.erb") }
 
   # The remote location of unicorn's config file. Used by god to fire it up
   set(:unicorn_remote_config) { "#{shared_path}/config/unicorn.rb" }
@@ -32,33 +32,33 @@ Capistrano::Configuration.instance.load do
   def unicorn_start_cmd
     "cd #{current_path} && #{unicorn_bin} -c #{unicorn_remote_config} -E #{rails_env} -D"
   end
-  
+
   def unicorn_stop_cmd
     "kill -QUIT `cat #{unicorn_pid}`"
   end
-  
+
   def unicorn_restart_cmd
     "kill -USR2 `cat #{unicorn_pid}`"
   end
 
-  # Unicorn 
+  # Unicorn
   #------------------------------------------------------------------------------
-  namespace :unicorn do    
+  namespace :unicorn do
     desc "|capistrano-recipes| Starts unicorn directly"
     task :start, :roles => :app do
       run unicorn_start_cmd
-    end  
-    
+    end
+
     desc "|capistrano-recipes| Stops unicorn directly"
     task :stop, :roles => :app do
       run unicorn_stop_cmd
-    end  
-    
+    end
+
     desc "|capistrano-recipes| Restarts unicorn directly"
     task :restart, :roles => :app do
       run unicorn_restart_cmd
     end
-    
+
     desc <<-EOF
     |capistrano-recipes| Parses the configuration file through ERB to fetch our variables and \
     uploads the result to #{unicorn_remote_config}, to be loaded by whoever is booting \
@@ -68,14 +68,14 @@ Capistrano::Configuration.instance.load do
       # TODO: refactor this to a more generic setup task once we have more socket tasks.
       commands = []
       commands << "mkdir -p #{sockets_path}"
-      commands << "chown #{user}:#{group} #{sockets_path} -R" 
+      commands << "chown #{user}:#{group} #{sockets_path} -R"
       commands << "chmod +rw #{sockets_path}"
-      
+
       run commands.join(" && ")
       generate_config(unicorn_local_config,unicorn_remote_config)
     end
   end
-  
+
   after 'deploy:setup' do
     unicorn.setup if Capistrano::CLI.ui.agree("Create unicorn configuration file? [Yn]")
   end if is_using_unicorn

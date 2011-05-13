@@ -2,26 +2,21 @@
 
 Useful Capistrano recipes including:
 
-* Create MySQL database and user on server (via prompts)
-* Create standalone copy of database.yml in shared path (via prompts)
+* Create Mongoid database and user on server (via prompts)
+* Create standalone copy of mongoid.yml in shared path (via prompts)
 * Log rotation and tailing commands
-* Restart and profile Phusion Passenger application server
 * Configure, start/stop/restart Unicorn application server
-* Send commands to God or Bluepill monitoring tools
-* Send commands to Thinking Sphinx
+* Send commands to Bluepill monitoring tools
 
 ==Included Tasks
 
 * cap db:create_yaml
-* cap db:mysql:setup
-* cap db:mysql:dump
-* cap db:mysql:fetch_dump
-* cap db:mysql:restore
+* cap db:mongoid:setup
+* cap db:mongoid:dump
+* cap db:mongoid:fetch_dump
+* cap db:mongoid:restore
 * cap log:rotate
 * cap log:tail
-* cap passenger:bounce
-* cap passenger:memory
-* cap passenger:status
 * cap nginx:setup
 * cap nginx:start
 * cap nginx:stop
@@ -32,44 +27,22 @@ Useful Capistrano recipes including:
 * cap unicorn:restart
 * cap unicorn:setup
 * cap symlinks:make
-* cap god:setup
-* cap god:implode
-* cap god:restart
-* cap god:reload
-* cap god:status
-* cap god:terminate
-* cap god:start
-* cap god:stop
-* cap god:quit
 * cap bluepill:install
 * cap bluepill:init
 * cap bluepill:start
 * cap bluepill:restart
 * cap bluepill:stop
 * cap bluepill:status
-* cap sphinx:config
-* cap sphinx:start
-* cap sphinx:stop
-* cap sphinx:rebuild
-* cap sphinx:index
-* cap sphinx:symlinks
+
 
 ==Installation
 
 Easy as pie...
 
-Ensure you have the Capistrano gem installed:
-
-  sudo gem install capistrano
-
-Optionally install the Capistrano extensions gem to give you multistage support:
-  
-  sudo gem install capistrano-ext
-
 Install this gem:
 
-  sudo gem install capistrano-recipes --source=http://gemcutter.com
-  
+  sudo gem install ricodigo-capistrano-recipes
+
 To setup the initial Capistrano deploy file, go to your Rails app folder via command line and enter:
 
   capify .
@@ -79,9 +52,9 @@ To setup the initial Capistrano deploy file, go to your Rails app folder via com
 Inside the newly created config/deploy.rb, add:
 
   require 'capistrano/ext/multistage' # only require if you've installed Cap ext gem
-  
+
   # This one should go at the end of your deploy.rb
-  require 'capistrano_recipes'
+  require 'ricodigo_capistrano_recipes'
 
 ===RVM
 
@@ -100,23 +73,16 @@ If you're using nginx as your web server, set :web_server to :nginx and deploy:s
 generate the appropriate configuration file for it based on your other variables, such as
 :application_uses_ssl, etc.
 
-===Passenger
-
-If you're running Phusion Passenger (http://www.modrails.com) be sure you add this line to config/deploy.rb:
-
-  set :server, :passenger
-
 ===Unicorn
-  
+
 If you're running Unicorn (http://unicorn.bogomips.org/) be sure to add this line instead:
-  
+
   set :server, :unicorn
 
 ==Contributors (thank you!)
 
-* Rogério Augusto
-* Leonardob Bighetti
-  
+https://github.com/ricodigo/ricodigo-capistrano-recipes/contributors
+
 ==Copyright
 
 Copyright (c) 2009-2011 Webficient LLC, Phil Misiowiec. See LICENSE for details.

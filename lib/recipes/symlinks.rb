@@ -1,7 +1,7 @@
 Capistrano::Configuration.instance.load do
   # These are set to the same structure in shared <=> current
-  set :normal_symlinks, %w(tmp log config/database.yml) unless exists?(:normal_symlinks)
-  
+  set :normal_symlinks, %w(tmp log config/mongoid.yml) unless exists?(:normal_symlinks)
+
   # Weird symlinks go somewhere else. Weird.
   set :weird_symlinks, { 'bundle' => 'vendor/bundle',
                          'pids'   => 'tmp/pids' } unless exists?(:weird_symlinks)
