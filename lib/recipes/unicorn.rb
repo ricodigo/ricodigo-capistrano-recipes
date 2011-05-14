@@ -15,7 +15,7 @@ Capistrano::Configuration.instance.load do
 
   # The wrapped bin to start unicorn
   # This is necessary if you're using rvm
-  set :unicorn_bin, 'bundle exec unicorn' unless exists?(:unicorn_bin)
+  set :unicorn_bin, 'unicorn' unless exists?(:unicorn_bin)
   set :unicorn_socket, File.join(sockets_path,'unicorn.sock') unless exists?(:unicorn_socket)
 
   # Defines where the unicorn pid will live.
@@ -30,15 +30,15 @@ Capistrano::Configuration.instance.load do
   set(:unicorn_remote_config) { "#{shared_path}/config/unicorn.rb" }
 
   def unicorn_start_cmd
-    "cd #{current_path} && #{unicorn_bin} -c #{unicorn_remote_config} -E #{rails_env} -D"
+    "#{unicorn_bin} -c #{unicorn_remote_config} -E #{rails_env} -D"
   end
 
   def unicorn_stop_cmd
-    "kill -QUIT `cat #{unicorn_pid}`"
+    "kill -QUIT {{PID}}"
   end
 
   def unicorn_restart_cmd
-    "kill -USR2 `cat #{unicorn_pid}`"
+    "kill -USR2 {{PID}}"
   end
 
   # Unicorn
@@ -66,12 +66,10 @@ Capistrano::Configuration.instance.load do
     EOF
     task :setup, :roles => :app , :except => { :no_release => true } do
       # TODO: refactor this to a more generic setup task once we have more socket tasks.
-      commands = []
-      commands << "mkdir -p #{sockets_path}"
-      commands << "chown #{user}:#{group} #{sockets_path} -R"
-      commands << "chmod +rw #{sockets_path}"
+      sudo "mkdir -p #{sockets_path}"
+      sudo "chown #{user}:#{group} #{sockets_path}"
+      sudo "chmod +rw #{sockets_path}"
 
-      run commands.join(" && ")
       generate_config(unicorn_local_config,unicorn_remote_config)
     end
   end

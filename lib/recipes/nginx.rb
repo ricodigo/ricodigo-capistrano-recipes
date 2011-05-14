@@ -16,8 +16,10 @@ Capistrano::Configuration.instance.load do
   namespace :nginx do
     desc "|capistrano-recipes| Parses and uploads nginx configuration for this app."
     task :setup, :roles => :app , :except => { :no_release => true } do
+      sudo "mkdir -p #{File.dirname(nginx_remote_config)}"
       set(:nginx_domains) { Capistrano::CLI.ui.ask("Enter #{application} domain names:") {|q|q.default = "#{application}.com"} }
-      generate_config(nginx_local_config, nginx_remote_config)
+      generate_config(nginx_local_config, "/tmp/nginx.#{application}.config")
+      sudo "mv '/tmp/nginx.#{application}.config' #{nginx_remote_config}"
     end
 
     desc "|capistrano-recipes| Parses config file and outputs it to STDOUT (internal task)"

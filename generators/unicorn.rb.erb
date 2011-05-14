@@ -2,7 +2,7 @@ rails_root = '<%= "#{deploy_to}/current" %>'
 rails_env  = '<%= environment %>'
 pid_file   = '<%= unicorn_pid %>'
 socket_file= '<%= unicorn_socket %>'
-log_file   = "#{rails_root}/log/unicorn.log"
+log_file   = '<%= deploy_to %>/current/log/unicorn.log'
 username   = '<%= unicorn_user %>'
 group      = '<%= unicorn_group %>'
 old_pid    = pid_file + '.oldbin'

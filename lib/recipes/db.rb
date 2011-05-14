@@ -51,45 +51,47 @@ Capistrano::Configuration.instance.load do
     end
 
     desc "|capistrano-recipes| Create mongoid.yml in shared path with settings for current stage and test env"
-    task :create_yaml do
+    task :setup do
       set(:db_host) { Capistrano::CLI.ui.ask("Enter #{environment} database host:") {|q|q.default = "localhost"} }
       set(:db_port) { Capistrano::CLI.ui.ask("Enter #{environment} database port:", Integer){|q| q.default = 27017 } }
       set(:db_user) { Capistrano::CLI.ui.ask "Enter #{environment} database username:" }
       set(:db_pass) { Capistrano::CLI.password_prompt "Enter #{environment} database password:" }
-      set(:db_safe_mode) { Capistrano::CLI.agree "Enable safe mode on #{environment} database? [Yn]:" }
+      set(:db_safe_mode) { Capistrano::CLI.ui.agree "Enable safe mode on #{environment} database? [Yn]:" }
 
       db_config = ERB.new <<-EOF
-      defaults: &defaults
-        host: #{db_host}
-        port: #{db_port}
-        username: #{db_user}
-        password: #{db_pass}
-        autocreate_indexes: false
-        allow_dynamic_fields: true
-        include_root_in_json: false
-        parameterize_keys: true
-        persist_in_safe_mode: #{db_safe_mode}
-        raise_not_found_error: true
-        reconnect_time: 3
+defaults: &defaults
+  host: #{db_host}
+  port: #{db_port}
+  <% if db_user && !db_user.empty? %>
+  username: #{db_user}
+  password: #{db_pass}
+  <% end %>
+  autocreate_indexes: false
+  allow_dynamic_fields: true
+  include_root_in_json: false
+  parameterize_keys: true
+  persist_in_safe_mode: #{db_safe_mode}
+  raise_not_found_error: true
+  reconnect_time: 3
 
-      development:
-        <<: *defaults
-        database: #{application}-development
+development:
+  <<: *defaults
+  database: #{application}-development
 
-      test:
-        <<: *defaults
-        database: #{application}-test
+test:
+  <<: *defaults
+  database: #{application}-test
 
-      production:
-        <<: *defaults
-        database: #{application}-production
+production:
+  <<: *defaults
+  database: #{application}-production
       EOF
 
-      put db_config.result, "#{shared_path}/config/mongoid.yml"
+      put db_config.result(binding), "#{shared_path}/config/mongoid.yml"
     end
   end
 
   after "deploy:setup" do
-    db.create_yaml if Capistrano::CLI.ui.agree("Create mongoid.yml in app's shared path? [Yn]")
+    db.setup if Capistrano::CLI.ui.agree("Create mongoid.yml in app's shared path? [Yn]")
   end
 end

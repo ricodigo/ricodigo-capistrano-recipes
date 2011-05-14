@@ -81,3 +81,8 @@ end
 def run_rake(task)
   run "cd #{current_path} && rake #{task} RAILS_ENV=#{environment}"
 end
+
+
+def rvmsudo(task)
+  run "cd #{current_path} && rvmsudo #{task}"
+end

@@ -18,7 +18,7 @@ Capistrano::Configuration.instance.load do
   # SCM settings
   set :scm, :git
   set :branch, 'master' unless exists?(:branch)
-  set :deploy_to, "/home/#{user}/rails/#{application}" unless exists?(:deploy_to)
+  set :deploy_to, "/home/#{user}/rails/#{application}"
   set :deploy_via, :checkout
   set :keep_releases, 3
   set :run_method, :run
@@ -55,7 +55,7 @@ Capistrano::Configuration.instance.load do
   set :monitorer, 'bluepill' unless exists?(:monitorer)
 
   # Application settings
-  set :shared_dirs, %w(config uploads backup bundle tmp sockets pids log system) unless exists?(:shared_dirs)
+  set :shared_dirs, %w(config config/pills uploads backup bundle tmp sockets pids log system) unless exists?(:shared_dirs)
 
   namespace :app do
     task :setup, :roles => :app do

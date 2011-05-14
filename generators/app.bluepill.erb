@@ -1,5 +1,6 @@
 app_name            = '<%= application %>'
 rails_root          = '<%= deploy_to %>/current'
+rails_env           = '<%= environment %>'
 log_file            = "#{rails_root}/log/bluepill.log"
 unicorn_bin         = '<%= unicorn_bin %>'
 unicorn_pid         = '<%= unicorn_pid %>'
@@ -7,6 +8,7 @@ unicorn_config      = '<%= unicorn_remote_config %>'
 unicorn_start_cmd   = '<%= unicorn_start_cmd %>'
 unicorn_stop_cmd    = '<%= unicorn_stop_cmd %>'
 unicorn_restart_cmd = '<%= unicorn_restart_cmd %>'
+
 
 puts ">> Starting #{app_name} bluepill with RAILS_ROOT=#{rails_root} and RAILS_ENV=#{rails_env}"
 

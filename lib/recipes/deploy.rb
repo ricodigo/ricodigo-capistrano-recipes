@@ -61,23 +61,5 @@ Capistrano::Configuration.instance.load do
         deploy.default
       end
     end
-
-    desc <<-DESC
-      |capistrano-recipes| Restarts your application.
-
-      If you are running with Unicorn, you can set the server type as well:
-
-      set :server, :unicorn
-
-      By default, this will be |capistrano-recipes| d via sudo as the `app' user. If \
-      you wish to run it as a different user, set the :runner variable to \
-      that user. If you are in an environment where you can't use sudo, set \
-      the :use_sudo variable to false:
-
-      set :use_sudo, false
-    DESC
-    task :restart, :roles => :app, :except => { :no_release => true } do
-      bluepill.restart
-    end
   end
 end

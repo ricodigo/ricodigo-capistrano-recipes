@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
     "LICENSE",
     "README.rdoc",
     "Rakefile",
+    "VERSION",
     "generators/app.bluepill.erb",
     "generators/nginx.conf.erb",
     "generators/unicorn.rb.erb",
@@ -37,7 +38,8 @@ Gem::Specification.new do |s|
     "lib/recipes/nginx.rb",
     "lib/recipes/symlinks.rb",
     "lib/recipes/unicorn.rb",
-    "lib/ricodigo_capistrano_recipes.rb"
+    "lib/ricodigo_capistrano_recipes.rb",
+    "ricodigo-capistrano-recipes.gemspec"
   ]
   s.homepage = %q{http://github.com/dcu/ricodigo-capistrano-recipes}
   s.licenses = ["MIT"]
@@ -55,7 +57,6 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<mongoid>, [">= 0"])
       s.add_runtime_dependency(%q<unicorn>, [">= 0"])
       s.add_runtime_dependency(%q<magent>, [">= 0"])
-      s.add_runtime_dependency(%q<bluepill>, [">= 0.0.48"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.6.0"])
       s.add_development_dependency(%q<shoulda>, [">= 0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
@@ -66,7 +67,6 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<mongoid>, [">= 0"])
       s.add_dependency(%q<unicorn>, [">= 0"])
       s.add_dependency(%q<magent>, [">= 0"])
-      s.add_dependency(%q<bluepill>, [">= 0.0.48"])
       s.add_dependency(%q<jeweler>, ["~> 1.6.0"])
       s.add_dependency(%q<shoulda>, [">= 0"])
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
@@ -78,7 +78,6 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<mongoid>, [">= 0"])
     s.add_dependency(%q<unicorn>, [">= 0"])
     s.add_dependency(%q<magent>, [">= 0"])
-    s.add_dependency(%q<bluepill>, [">= 0.0.48"])
     s.add_dependency(%q<jeweler>, ["~> 1.6.0"])
     s.add_dependency(%q<shoulda>, [">= 0"])
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
