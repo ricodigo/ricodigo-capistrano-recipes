@@ -1,5 +1,5 @@
 Capistrano::Configuration.instance.load do
-  set :asset_packager, "jammit"
+  set :asset_packager, "jammit" unless exists?(:asset_packager)
 
   namespace :assets do
     desc "Compile Assets with compass"

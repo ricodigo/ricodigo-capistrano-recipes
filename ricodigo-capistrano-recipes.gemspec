@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{ricodigo-capistrano-recipes}
-  s.version = "0.1.0"
+  s.version = "0.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David A. Cuadrado"]
@@ -29,12 +29,14 @@ Gem::Specification.new do |s|
     "generators/unicorn.rb.erb",
     "lib/helpers.rb",
     "lib/recipes/application.rb",
+    "lib/recipes/assets.rb",
     "lib/recipes/bluepill.rb",
     "lib/recipes/bundler.rb",
     "lib/recipes/db.rb",
     "lib/recipes/deploy.rb",
     "lib/recipes/hooks.rb",
     "lib/recipes/log.rb",
+    "lib/recipes/magent.rb",
     "lib/recipes/nginx.rb",
     "lib/recipes/symlinks.rb",
     "lib/recipes/unicorn.rb",
