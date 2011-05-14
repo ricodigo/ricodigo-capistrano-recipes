@@ -22,7 +22,7 @@ Capistrano::Configuration.instance.load do
         copytruncate
       }}
       put rotate_script, "#{shared_path}/logrotate_script"
-      "#{sudo} cp #{shared_path}/logrotate_script /etc/logrotate.d/#{application}"
+      sudo "cp #{shared_path}/logrotate_script /etc/logrotate.d/#{application}"
       run "rm #{shared_path}/logrotate_script"
 
       rotate_script = %Q{/var/log/mongodb/*.log {
@@ -35,7 +35,7 @@ Capistrano::Configuration.instance.load do
         copytruncate
       }}
       put rotate_script, "#{shared_path}/logrotate_script"
-      "#{sudo} cp #{shared_path}/logrotate_script /etc/logrotate.d/mongodb"
+      sudo "cp #{shared_path}/logrotate_script /etc/logrotate.d/mongodb"
       run "rm #{shared_path}/logrotate_script"
     end
   end

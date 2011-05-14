@@ -10,7 +10,7 @@ Capistrano::Configuration.instance.load do
       EOF
       task :dump, :roles => :db, :only => { :primary => true } do
         prepare_from_yaml
-        run "mongodump -u #{db_user} -p #{db_pass} -h #{db_host} --port #{db_port} -d #{db_name} #{db_backup_path}" do |ch, stream, out|
+        run "mongodump #{auth_options} -h #{db_host} --port #{db_port} -d #{db_name} -o #{db_backup_path}" do |ch, stream, out|
           puts out
         end
       end
@@ -18,7 +18,7 @@ Capistrano::Configuration.instance.load do
       desc "|capistrano-recipes| Restores the database from the latest compressed dump"
       task :restore, :roles => :db, :only => { :primary => true } do
         prepare_from_yaml
-        run "mongorestore --drop -d #{db_name} #{db_backup_path}/#{db_name}" do |ch, stream, out|
+        run "mongorestore #{auth_options} --drop -d #{db_name} #{db_backup_path}/#{db_name}" do |ch, stream, out|
           puts out
         end
       end
@@ -26,17 +26,27 @@ Capistrano::Configuration.instance.load do
       desc "|capistrano-recipes| Downloads the compressed database dump to this machine"
       task :fetch_dump, :roles => :db, :only => { :primary => true } do
         prepare_from_yaml
-        download db_remote_file, db_local_file, :via => :scp
+        download db_remote_backup, db_local_file, :via => :scp, :recursive => true
+      end
+
+      def auth_options
+        if db_user && db_pass
+          "-u #{db_user} -p #{db_pass}"
+        end
       end
 
       # Sets database variables from remote database.yaml
       def prepare_from_yaml
         set(:db_backup_path) { "#{shared_path}/backup/" }
-        set(:db_local_file)  { "tmp/#{db_file}" }
-        set(:db_user) { db_config[rails_env]["username"] }
-        set(:db_pass) { db_config[rails_env]["password"] }
-        set(:db_host) { db_config[rails_env]["host"] }
-        set(:db_name) { db_config[rails_env]["database"] }
+
+        set(:db_local_file)  { "tmp/" }
+        set(:db_user) { db_config[rails_env.to_s]["username"] }
+        set(:db_pass) { db_config[rails_env.to_s]["password"] }
+        set(:db_host) { db_config[rails_env.to_s]["host"] }
+        set(:db_port) { db_config[rails_env.to_s]["port"] }
+        set(:db_name) { db_config[rails_env.to_s]["database"] }
+
+        set(:db_remote_backup) { "#{db_backup_path}/#{db_name}" }
       end
 
       def db_config
