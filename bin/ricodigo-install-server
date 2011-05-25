@@ -1,0 +1,145 @@
+#!/usr/bin/env ruby
+
+require 'net/ssh'
+
+
+host = ARGV[0]
+user = ARGV[1]
+
+if !host || !user
+  $stderr.puts "Usage: #{File.basename($0)} <host> <user>"
+  exit 1
+end
+
+def setup_repos(ssh)
+  puts ">> Adding extra repos.."
+  cmd = 'echo "deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen" > /etc/apt/sources.list.d/mongo.list'
+  ssh.exec! %@sudo bash -c '#{cmd}'@ do |c,s,d|
+    puts d
+  end
+
+  ssh.exec! 'sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10' do |c,s,d|
+    puts d
+  end
+  
+  ssh.exec! "sudo apt-get update" do |c,s,d|
+    puts d
+  end
+end
+
+def install_packages(ssh)
+  puts ">> Installing packages..."
+  packages = %w[
+    bind9 build-essential ufw libreadline6-dev git-core 
+    libxslt1-dev libxml2-dev libssl-dev nginx mongodb-10gen curl 
+    libcurl4-openssl-dev graphicsmagick
+  ]
+
+  ssh.exec! "sudo apt-get install -y --force-yes #{packages.join(" ")}" do |channel, stream, data|
+    puts data
+  end
+end
+
+def install_postfix(ssh)
+  ssh.exec!("sudo apt-get install postfix -y --force-yes") do |channel, stream, data|
+    puts data
+    if data =~ /General type of mail configuration:\s*$/
+      answer = $stdin.gets
+      channel.send_data(answer)
+    elsif data =~ /System mail name:\s*$/
+      answer = $stdin.gets
+      channel.send_data(answer)
+    elsif data =~ /Root and postmaster mail recipient:\s*$/
+      answer = $stdin.gets
+      channel.send_data(answer)
+    elsif data =~ /Other destinations to accept mail for \(blank for none\):\s*$/
+      answer = $stdin.gets
+      channel.send_data(answer)
+    elsif data =~ /Force synchronous updates on mail queue\?\s*$/
+      channel.send_data("no\n")
+    elsif data =~ /Local networks:\s*$/
+      channel.send_data("\n")
+    elsif data =~ /Mailbox size limit \(bytes\):\s*$/
+      channel.send_data("0\n")
+    elsif data =~ /Local address extension character:\s*$/
+      channel.send_data("\n")
+    elsif data =~ /Internet protocols to use:\s*$/
+      channel.send_data("1\n")
+    end
+  end
+end
+
+def setup_firewall(ssh)
+  puts ">> Setup firewall..."
+  
+  ssh.exec! "sudo ufw disable" do |channel, stream, data|
+    puts data
+  end
+
+  commands = []
+  commands << "sudo ufw allow to any port 80"
+  commands << "sudo ufw allow to any port 443"
+  commands << "sudo ufw allow to any port 22"
+  commands << "sudo ufw allow to any port 53"
+  commands << "sudo ufw allow to any port 25"
+  commands << "sudo ufw allow to any port 587"
+  commands << "sudo ufw default deny"
+  
+  ssh.exec!(commands.join(" && ")) {|c,s,d| puts d }
+  ssh.exec!("sudo ufw enable") {|c,s,d| puts d }
+
+  ssh.exec! "iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT"
+  ssh.exec! "iptables -A INPUT -i lo -j ACCEPT"
+end
+
+def install_rvm(ssh)
+  puts "Installing RVM..."
+
+  ssh.exec!("sudo bash < <(curl -s https://rvm.beginrescueend.com/install/rvm)") {|c,s,d| puts d }
+
+  command = %@
+mv /etc/bash.bashrc /tmp/rd_bash.bashrc -f
+echo ". /etc/rvmrc" >> /etc/bash.bashrc
+echo ". /usr/local/rvm/scripts/rvm" >> /etc/bash.bashrc
+cat /tmp/rd_bash.bashrc >> /etc/bash.bashrc
+source /etc/rvmrc
+source /usr/local/rvm/scripts/rvm
+
+rvm install 1.9.2
+rvm install ree
+
+rvm use 1.9.2 --default
+@
+
+  ssh.exec!("sudo bash -c '#{command}'") {|c,s,d| puts d }
+end
+
+def install_gems(ssh)
+  puts ">> Installing required gems..."
+  
+  command = %@
+echo "gem: --no-ri --no-rdoc" >> /etc/gemrc
+echo "update: --no-ri --no-rdoc" >> /etc/gemrc
+echo "install: --no-ri --no-rdoc" >> /etc/gemrc
+@
+  ssh.exec!("sudo bash -c '#{command}'") {|c,s,d| puts d }
+  
+  gems = %w[
+    rails mongoid whenever capistrano unicorn mongoid_ext magent 
+    bson_ext sanitize uuidtools ruby-stemmer mini_magick magic 
+    haml sass compass mechanize nokogiri rdiscount
+  ]
+
+  ssh.exec! "rvmsudo gem install #{gems.join(" ")} --no-ri --no-rdoc" do |channel, stream, data|
+    puts data
+  end
+end
+
+Net::SSH.start(host, user) do |ssh|
+#   setup_repos(ssh)
+#   install_packages(ssh)
+#   install_postfix(ssh)
+#   setup_firewall(ssh) unless host =~ /amazonaws\.com$/
+#   install_rvm(ssh)
+  install_gems(ssh)
+end

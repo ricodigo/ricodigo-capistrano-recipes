@@ -71,6 +71,7 @@ DEPENDENCIES
   jeweler (~> 1.6.0)
   magent
   mongoid
+  net-ssh
   rcov
   shoulda
   unicorn

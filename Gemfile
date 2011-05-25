@@ -1,5 +1,6 @@
 source "http://rubygems.org"
 
+gem "net-ssh"
 gem "capistrano", ">= 2.5.9"
 gem "capistrano-ext", ">= 1.2.1"
 gem "mongoid"
