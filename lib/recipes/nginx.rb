@@ -8,7 +8,7 @@ Capistrano::Configuration.instance.load do
 
   # Path to where your remote config will reside (I use a directory sites inside conf)
   set(:nginx_remote_config) do
-    "#{nginx_path_prefix}/conf/sites/#{application}.conf"
+    "#{nginx_path_prefix}/conf.d/#{application}.site.conf"
   end unless exists?(:nginx_remote_config)
 
   # Nginx tasks are not *nix agnostic, they assume you're using Debian/Ubuntu.
