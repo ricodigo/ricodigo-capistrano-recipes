@@ -32,7 +32,7 @@ def install_packages(ssh)
   packages = %w[
     bind9 build-essential ufw libreadline6-dev git-core 
     libxslt1-dev libxml2-dev libssl-dev nginx mongodb-10gen curl 
-    libcurl4-openssl-dev graphicsmagick
+    libcurl4-openssl-dev graphicsmagick openjdk-6-jre-headless libsasl2-dev
   ]
 
   ssh.exec! "sudo apt-get install -y --force-yes #{packages.join(" ")}" do |channel, stream, data|

@@ -1,0 +1,37 @@
+queue               = "<%= magent_queue %>"
+identity            =  "#{queue}-#{Socket.gethostname.split('.')[0]}"
+app_name            = 'magent'
+rails_root          = "<%= deploy_to %>/current"
+rails_env           = "<%= environment %>"
+log_file            = "#{rails_root}/log/magent_bluepill.log"
+magent_bin         = "/usr/bin/env RAILS_ENV=#{rails_env} bundle exec magent"
+magent_pid_path    = "#{rails_root}/tmp/pids"
+magent_pid_file    = "#{magent_pid_path}/magent.#{identity}.pid"
+grace_time         = <%= magent_grace_time %>
+
+magent_start_cmd   = "#{magent_bin} -d -Q #{queue} -l #{rails_root}/log -P #{magent_pid_path} start"
+magent_stop_cmd    = "#{magent_bin} -d -Q #{queue} -l #{rails_root}/log -P #{magent_pid_path} stop"
+magent_restart_cmd = "#{magent_bin} -d -Q #{queue} -l #{rails_root}/log -P #{magent_pid_path} restart"
+
+
+puts ">> Starting #{app_name} bluepill with RAILS_ROOT=#{rails_root} and RAILS_ENV=#{rails_env}"
+
+Bluepill.application(app_name, :log_file => log_file) do |app|
+  app.process("magent-#{queue}") do |process|
+    process.pid_file = magent_pid_file
+    process.working_dir = rails_root
+
+    process.start_command = magent_start_cmd
+    process.stop_command = magent_stop_cmd
+    process.restart_command = magent_restart_cmd
+
+    process.start_grace_time = grace_time
+    process.stop_grace_time = grace_time
+    process.restart_grace_time = grace_time
+
+    process.uid = "app"
+    process.gid = "app"
+
+    process.checks :mem_usage, :every => 15.seconds, :below => 165.megabytes, :times => [3,4], :fires => :stop
+  end
+end

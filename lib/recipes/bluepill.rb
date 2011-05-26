@@ -1,6 +1,6 @@
 Capistrano::Configuration.instance.load do
-  set(:bluepill_local_config) { "#{templates_path}/app.bluepill.erb" } unless exists?(:nginx_local_config)
-  set(:bluepill_remote_config) { "#{shared_path}/config/pills/#{application}.pill" } unless exists?(:nginx_remote_config)
+  set(:bluepill_local_config) { "#{templates_path}/app.bluepill.erb" } unless exists?(:bluepill_local_config)
+  set(:bluepill_remote_config) { "#{shared_path}/config/pills/#{application}.pill" } unless exists?(:bluepill_remote_config)
 
   namespace :bluepill do
     desc "|capistrano-recipes| Parses and uploads nginx configuration for this app."

@@ -15,8 +15,8 @@ server {
 
     # path for static files
     root <%= deploy_to %>/current/public;
-    access_log <%= deploy_to %>/current/log/nginx.access.log main;
-    error_log  <%= deploy_to %>/current/log/nginx.error.log info;
+    access_log <%= deploy_to %>/current/log/nginx.access.log;
+    error_log  <%= deploy_to %>/current/log/nginx.error.log;
 
     # this rewrites all the requests to the maintenance.html
     # page if it exists in the doc root. This is for capistrano's
@@ -120,8 +120,8 @@ server {
   client_max_body_size    50M;
 
   root <%= deploy_to %>/current/public;
-  access_log <%= deploy_to %>/current/log/nginx.access.log main;
-  error_log  <%= deploy_to %>/current/log/nginx.error.log info;
+  access_log <%= deploy_to %>/current/log/nginx.access.log;
+  error_log  <%= deploy_to %>/current/log/nginx.error.log;
 
   # this rewrites all the requests to the maintenance.html
   # page if it exists in the doc root. This is for capistrano's
