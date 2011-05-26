@@ -3,9 +3,14 @@ Capistrano::Configuration.instance.load do
   set(:bluepill_remote_config) { "#{shared_path}/config/pills/#{application}.pill" } unless exists?(:bluepill_remote_config)
 
   namespace :bluepill do
-    desc "|capistrano-recipes| Parses and uploads nginx configuration for this app."
+    desc "|capistrano-recipes| Parses and uploads bluepill configuration for this app."
     task :setup, :roles => :app , :except => { :no_release => true } do
       generate_config(bluepill_local_config, bluepill_remote_config)
+    end
+
+    desc "|capistrano-recipes| Parses and uploads a bluepill template."
+    task :template, :roles => :app , :except => { :no_release => true } do
+      generate_config("#{templates_path}/template.bluepill.erb", "#{shared_path}/config/pills/template.pill")
     end
 
     desc "|capistrano-recipes| Install the bluepill monitoring tool"
