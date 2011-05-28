@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{ricodigo-capistrano-recipes}
-  s.version = "0.1.5"
+  s.version = "0.1.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David A. Cuadrado"]
-  s.date = %q{2011-05-26}
+  s.date = %q{2011-05-28}
   s.default_executable = %q{ricodigo-install-server}
   s.description = %q{our capistrano recipes. forked from capistrano-recipes}
   s.email = %q{krawek@gmail.com}
@@ -43,6 +43,7 @@ Gem::Specification.new do |s|
     "lib/recipes/log.rb",
     "lib/recipes/magent.rb",
     "lib/recipes/nginx.rb",
+    "lib/recipes/push_deploy.rb",
     "lib/recipes/symlinks.rb",
     "lib/recipes/unicorn.rb",
     "lib/ricodigo_capistrano_recipes.rb",
