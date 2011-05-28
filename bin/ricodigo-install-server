@@ -21,7 +21,7 @@ def setup_repos(ssh)
   ssh.exec! 'sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10' do |c,s,d|
     puts d
   end
-  
+
   ssh.exec! "sudo apt-get update" do |c,s,d|
     puts d
   end
@@ -30,8 +30,8 @@ end
 def install_packages(ssh)
   puts ">> Installing packages..."
   packages = %w[
-    bind9 build-essential ufw libreadline6-dev git-core 
-    libxslt1-dev libxml2-dev libssl-dev nginx mongodb-10gen curl 
+    bind9 build-essential ufw libreadline6-dev git-core
+    libxslt1-dev libxml2-dev libssl-dev nginx mongodb-10gen curl
     libcurl4-openssl-dev graphicsmagick openjdk-6-jre-headless libsasl2-dev
   ]
 
@@ -71,7 +71,7 @@ end
 
 def setup_firewall(ssh)
   puts ">> Setup firewall..."
-  
+
   ssh.exec! "sudo ufw disable" do |channel, stream, data|
     puts data
   end
@@ -84,7 +84,7 @@ def setup_firewall(ssh)
   commands << "sudo ufw allow to any port 25"
   commands << "sudo ufw allow to any port 587"
   commands << "sudo ufw default deny"
-  
+
   ssh.exec!(commands.join(" && ")) {|c,s,d| puts d }
   ssh.exec!("sudo ufw enable") {|c,s,d| puts d }
 
@@ -116,17 +116,17 @@ end
 
 def install_gems(ssh)
   puts ">> Installing required gems..."
-  
+
   command = %@
 echo "gem: --no-ri --no-rdoc" >> /etc/gemrc
 echo "update: --no-ri --no-rdoc" >> /etc/gemrc
 echo "install: --no-ri --no-rdoc" >> /etc/gemrc
 @
   ssh.exec!("sudo bash -c '#{command}'") {|c,s,d| puts d }
-  
+
   gems = %w[
-    rails mongoid whenever capistrano unicorn mongoid_ext magent 
-    bson_ext sanitize uuidtools ruby-stemmer mini_magick magic 
+    rails mongoid whenever capistrano unicorn mongoid_ext magent
+    bson_ext sanitize uuidtools ruby-stemmer mini_magick magic
     haml sass compass mechanize nokogiri rdiscount
   ]
 
@@ -136,10 +136,10 @@ echo "install: --no-ri --no-rdoc" >> /etc/gemrc
 end
 
 Net::SSH.start(host, user) do |ssh|
-#   setup_repos(ssh)
-#   install_packages(ssh)
-#   install_postfix(ssh)
-#   setup_firewall(ssh) unless host =~ /amazonaws\.com$/
-#   install_rvm(ssh)
+  setup_repos(ssh)
+  install_packages(ssh)
+  install_postfix(ssh)
+  setup_firewall(ssh) unless host =~ /amazonaws\.com$/
+  install_rvm(ssh)
   install_gems(ssh)
 end

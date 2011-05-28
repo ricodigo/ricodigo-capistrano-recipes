@@ -7,13 +7,14 @@ Capistrano::Configuration.instance.load do
 
       run "rm -rf #{push_deploy_repo}"
       run "mkdir -p ~/code"
-      run "git clone #{repository} #{push_deploy_repo}"
+      run "git clone --depth=1 #{repository} #{push_deploy_repo}"
       run "cd #{push_deploy_repo} && git config receive.denyCurrentBranch ignore"
 
       hook = %@#!/bin/bash
 cd ..
 GIT_DIR=$(pwd)/.git
-git reset --hard HEAD
+git reset --hard master
+git update-server-info
 unset GIT_DIR
 
 bundle install
