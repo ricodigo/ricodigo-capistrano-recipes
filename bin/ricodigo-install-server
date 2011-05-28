@@ -86,7 +86,7 @@ def setup_firewall(ssh)
   commands << "sudo ufw default deny"
 
   ssh.exec!(commands.join(" && ")) {|c,s,d| puts d }
-  ssh.exec!("sudo ufw enable") {|c,s,d| puts d }
+  ssh.exec!("sudo ufw enable") {|c,s,d| puts d; c.send_data("yes") }
 
   ssh.exec! "iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT"
   ssh.exec! "iptables -A INPUT -i lo -j ACCEPT"
