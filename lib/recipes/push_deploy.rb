@@ -5,10 +5,14 @@ Capistrano::Configuration.instance.load do
     task :setup, :roles => :app  do
       server = roles[:app].servers.first
 
+      origin = Capistrano::CLI.ui.ask("Enter repository url to clone:")
+
       run "rm -rf #{push_deploy_repo}"
       run "mkdir -p ~/code"
-      run "git clone --depth=1 #{repository} #{push_deploy_repo}"
+      run "git clone --depth=1 #{origin} #{push_deploy_repo}"
       run "cd #{push_deploy_repo} && git config receive.denyCurrentBranch ignore"
+
+      repo_url = "#{user}\@#{server}:#{push_deploy_repo}"
 
       hook = %@#!/bin/bash
 cd ..
@@ -24,17 +28,20 @@ cap #{environment} deploy
       put hook, hook_path
       run "chmod 755 #{hook_path}"
 
+      run "cd #{current_path} && git remote rm origin && git remote add origin #{repo_url}"
+
       puts %@
 
 == Instructions
 
 add deploy repository to your remotes
 
-  git remote add deploy #{user}\@#{server}:#{push_deploy_repo}
+  git remote add deploy #{repo_url}
 
 add this to your deploy.rb
 
-  set :repository, "#{user}\@#{server}:#{push_deploy_repo}"
+  set :repository, "#{repo_url}"
+  set :branch, "origin/master"
 
 to deploy a branch just type:
 
