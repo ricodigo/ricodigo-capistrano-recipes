@@ -69,29 +69,6 @@ def install_postfix(ssh)
   end
 end
 
-def setup_firewall(ssh)
-  puts ">> Setup firewall..."
-
-  ssh.exec! "sudo ufw disable" do |channel, stream, data|
-    puts data
-  end
-
-  commands = []
-  commands << "sudo ufw allow to any port 80"
-  commands << "sudo ufw allow to any port 443"
-  commands << "sudo ufw allow to any port 22"
-  commands << "sudo ufw allow to any port 53"
-  commands << "sudo ufw allow to any port 25"
-  commands << "sudo ufw allow to any port 587"
-  commands << "sudo ufw default deny"
-
-  ssh.exec!(commands.join(" && ")) {|c,s,d| puts d }
-  ssh.exec!("sudo ufw enable") {|c,s,d| puts d; c.send_data("yes") }
-
-  ssh.exec! "iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT"
-  ssh.exec! "iptables -A INPUT -i lo -j ACCEPT"
-end
-
 def install_rvm(ssh)
   puts "Installing RVM..."
 
@@ -106,7 +83,6 @@ source /etc/rvmrc
 source /usr/local/rvm/scripts/rvm
 
 rvm install 1.9.2
-rvm install ree
 
 rvm use 1.9.2 --default
 @
