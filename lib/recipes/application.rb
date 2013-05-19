@@ -34,11 +34,11 @@ Capistrano::Configuration.instance.load do
   set :using_rvm, true unless exists?(:using_rvm)
 
   if using_rvm
-    $:.unshift(File.expand_path('./lib', ENV['rvm_path']))  # Add RVM's lib directory to the load path.
-    require "rvm/capistrano"                                # Load RVM's capistrano plugin.
+    #$:.unshift(File.expand_path('./lib', ENV['rvm_path']))  # Add RVM's lib directory to the load path.
+    #require "rvm/capistrano"                                # Load RVM's capistrano plugin.
 
     # Sets the rvm to a specific version (or whatever env you want it to run in)
-    set :rvm_ruby_string, '1.9.2' unless exists?(:rvm_ruby_string)
+    set :rvm_ruby_string, '1.9.3@global' unless exists?(:rvm_ruby_string)
   end
 
   # Daemons settings
